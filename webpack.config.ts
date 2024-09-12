@@ -1,19 +1,32 @@
 import path from 'path';
 import nodeExternals from 'webpack-node-externals';
+import CopyFiles from 'copy-webpack-plugin';
 
 module.exports = {
-    entry: './index.ts',
+    entry: './src/index.ts',
     target: 'node',
     mode: 'production',
     externals: [nodeExternals()],
     resolve: {
-        extensions: ['.ts']
+        extensions: ['.ts', '.tsx']
     },
     module: {
         rules: [
-            { test: /\.ts$/, loader: 'ts-loader', exclude: /node_modules/}
+            {
+                test: /\.tsx?$/,
+                use: "ts-loader",
+                exclude: /node_modules/,
+            }
         ]
     },
+    plugins: [
+        new CopyFiles({
+            patterns: [{
+                from: './client/build',
+                to: './build',
+            }]
+        })
+    ],
     output: {
         path: path.resolve(__dirname, 'dist'),
         filename: 'index.js'
